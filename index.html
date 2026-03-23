@@ -6,6 +6,7 @@
     <title>EL3VATE - Shop</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
 </head>
 <body>
     <div class="promo-banner">
@@ -90,6 +91,41 @@
     <section class="hero">
         <h1 class="hero-title">EL3VATE</h1>
         <p class="hero-tagline">ELEVATE YOUR GAME</p>
+        
+        <div class="hero-3d-container">
+            <div class="hero-info-box hero-info-left">
+                <h3>Premium Quality</h3>
+                <p>Handcrafted with precision-engineered cushioning for unmatched comfort and performance</p>
+                <div class="info-box-stat">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Genuine Leather</span>
+                </div>
+            </div>
+            
+            <div class="hero-3d-model">
+                <model-viewer 
+                    src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+                    alt="3D Sneaker"
+                    auto-rotate
+                    camera-controls
+                    disable-zoom
+                    interaction-prompt="none"
+                    shadow-intensity="1"
+                    camera-orbit="45deg 55deg 2.5m"
+                    field-of-view="30deg">
+                </model-viewer>
+                <p class="model-hint">Drag to rotate</p>
+            </div>
+            
+            <div class="hero-info-box hero-info-right">
+                <h3>Express Delivery</h3>
+                <p>Free next-day shipping on all orders over $100. 30-day hassle-free returns</p>
+                <div class="info-box-stat">
+                    <span class="stat-number">24h</span>
+                    <span class="stat-label">Delivery Time</span>
+                </div>
+            </div>
+        </div>
     </section>
 
     <main class="main-content">
