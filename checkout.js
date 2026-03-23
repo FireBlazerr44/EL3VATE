@@ -30,6 +30,7 @@ function renderCheckout() {
             <img src="${item.image}" alt="${item.name}" class="checkout-item-image">
             <div class="checkout-item-details">
                 <h4>${item.name}</h4>
+                <p>Size: ${item.size || 'One Size'}</p>
                 <p>Qty: ${item.quantity}</p>
             </div>
             <p class="checkout-item-price">$${(item.price * item.quantity).toFixed(2)}</p>

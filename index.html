@@ -11,14 +11,14 @@
 <body>
     <div class="promo-banner">
         <div class="promo-wrapper">
-            <span>🔥 Use code <strong>ELEVATEYOURGAME</strong> for 10% off! 🔥</span>
-            <span>🔥 Use code <strong>ELEVATEYOURGAME</strong> for 10% off! 🔥</span>
-            <span>🔥 Use code <strong>ELEVATEYOURGAME</strong> for 10% off! 🔥</span>
-            <span>🔥 Use code <strong>ELEVATEYOURGAME</strong> for 10% off! 🔥</span>
-            <span>🔥 Use code <strong>ELEVATEYOURGAME</strong> for 10% off! 🔥</span>
-            <span>🔥 Use code <strong>ELEVATEYOURGAME</strong> for 10% off! 🔥</span>
-            <span>🔥 Use code <strong>ELEVATEYOURGAME</strong> for 10% off! 🔥</span>
-            <span>🔥 Use code <strong>ELEVATEYOURGAME</strong> for 10% off! 🔥</span>
+            <span>Use code <strong>ELEVATEYOURGAME</strong> for 10% off!</span>
+            <span>Use code <strong>ELEVATEYOURGAME</strong> for 10% off!</span>
+            <span>Use code <strong>ELEVATEYOURGAME</strong> for 10% off!</span>
+            <span>Use code <strong>ELEVATEYOURGAME</strong> for 10% off!</span>
+            <span>Use code <strong>ELEVATEYOURGAME</strong> for 10% off!</span>
+            <span>Use code <strong>ELEVATEYOURGAME</strong> for 10% off!</span>
+            <span>Use code <strong>ELEVATEYOURGAME</strong> for 10% off!</span>
+            <span>Use code <strong>ELEVATEYOURGAME</strong> for 10% off!</span>
         </div>
     </div>
     <header class="header">
@@ -70,6 +70,12 @@
                     <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
                 <span class="cart-badge" id="cart-badge">0</span>
+            </button>
+            <button class="icon-btn wishlist-btn" id="wishlist-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                <span class="wishlist-badge" id="wishlist-badge">0</span>
             </button>
             <div class="profile-dropdown">
                 <button class="icon-btn profile-btn">
@@ -177,6 +183,19 @@
                 <span id="cart-total">$0.00</span>
             </div>
             <button class="checkout-btn" id="checkout-btn">CHECK OUT</button>
+        </div>
+    </div>
+
+    <div class="cart-sidebar" id="wishlist-sidebar">
+        <div class="cart-header">
+            <h3>My Wishlist</h3>
+            <button class="close-cart" id="close-wishlist">&times;</button>
+        </div>
+        <div class="cart-items" id="wishlist-items">
+            <p class="cart-empty">Your wishlist is empty</p>
+        </div>
+        <div class="cart-footer">
+            <p style="font-size: 13px; color: #666; text-align: center;">Items you want will appear here</p>
         </div>
     </div>
 
