@@ -56,7 +56,7 @@ button {
 .spinning-logo {
     width: 45px;
     height: 45px;
-    animation: spin 8s linear infinite;
+    animation: elevate 2s ease-in-out infinite;
     cursor: pointer;
 }
 
@@ -65,17 +65,17 @@ button {
     height: 100%;
 }
 
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
+@keyframes elevate {
+    0%, 100% {
+        transform: translateY(0);
     }
-    to {
-        transform: rotate(360deg);
+    50% {
+        transform: translateY(-15px);
     }
 }
 
 .spinning-logo:hover {
-    animation-duration: 2s;
+    animation-duration: 1s;
 }
 
 .nav-links {
