@@ -6,10 +6,19 @@ let selectedSize = null;
 let currentModalProduct = null;
 
 function init() {
+    loadCart();
     loadWishlist();
     renderProducts();
     setupEventListeners();
     checkAuth();
+    updateCartUI();
+}
+
+function loadCart() {
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+    }
 }
 
 function checkAuth() {
@@ -97,8 +106,13 @@ function addToCart(productId) {
         cart.push({ ...product, quantity: 1 });
     }
     
+    saveCart();
     updateCartUI();
     showToast();
+}
+
+function saveCart() {
+    localStorage.setItem('cart', JSON.stringify(cart));
 }
 
 function updateCartUI() {
@@ -155,6 +169,7 @@ function updateCartUI() {
 
 function removeFromCart(productId) {
     cart = cart.filter(item => item.id !== productId);
+    saveCart();
     updateCartUI();
 }
 
@@ -165,6 +180,7 @@ function updateQuantity(productId, change) {
         if (item.quantity <= 0) {
             removeFromCart(productId);
         } else {
+            saveCart();
             updateCartUI();
         }
     }
