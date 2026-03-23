@@ -6,28 +6,10 @@ let deleteProductId = null;
 function init() {
     checkAdminAuth();
     loadData();
-    migrateBuiltInProducts();
     renderProducts();
     renderTrashProducts();
     updateStats();
     setupEventListeners();
-}
-
-function migrateBuiltInProducts() {
-    const builtInIds = products.map(p => p.id);
-    const adminIds = adminProducts.map(p => p.id);
-    
-    const missingIds = builtInIds.filter(id => !adminIds.includes(id));
-    
-    if (missingIds.length > 0) {
-        missingIds.forEach(id => {
-            const product = products.find(p => p.id === id);
-            if (product) {
-                adminProducts.push({ ...product });
-            }
-        });
-        saveAdminProducts();
-    }
 }
 
 function checkAdminAuth() {
@@ -54,24 +36,17 @@ function saveDeletedProducts() {
     localStorage.setItem('deletedProducts', JSON.stringify(deletedProducts));
 }
 
-function getModifiedProductIds() {
-    return adminProducts.map(p => p.id);
-}
-
 function getAllProducts() {
-    return [...products, ...adminProducts];
+    return adminProducts;
 }
 
 function getVisibleProducts() {
-    const modifiedIds = adminProducts.map(p => p.id);
-    const visible = products.filter(p => !modifiedIds.includes(p.id));
-    return [...visible, ...adminProducts];
+    return adminProducts;
 }
 
 function getNextProductId() {
-    const allProds = [...products, ...adminProducts];
-    if (allProds.length === 0) return 1;
-    return Math.max(...allProds.map(p => p.id)) + 1;
+    if (adminProducts.length === 0) return 1;
+    return Math.max(...adminProducts.map(p => p.id)) + 1;
 }
 
 function renderProducts(filter = '', category = 'all') {
@@ -101,47 +76,41 @@ function renderProducts(filter = '', category = 'all') {
         return;
     }
 
-    tbody.innerHTML = allProducts.map(product => {
-        const isModified = adminProducts.some(p => p.id === product.id);
-        return `
-            <tr data-id="${product.id}">
-                <td>
-                    <div class="admin-product-image">
-                        <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/50'">
-                    </div>
-                </td>
-                <td>
-                    <div class="admin-product-name">
-                        ${product.name}
-                        ${isModified ? '<span class="admin-badge">Modified</span>' : ''}
-                    </div>
-                </td>
-                <td>
-                    <span class="admin-category-badge">${product.category}</span>
-                </td>
-                <td>$${product.price.toFixed(2)}</td>
-                <td>
-                    <span class="admin-new-badge ${product.new ? 'active' : ''}">${product.new ? 'NEW' : '-'}</span>
-                </td>
-                <td>
-                    <div class="admin-action-buttons">
-                        <button class="admin-action-btn edit-btn" data-id="${product.id}" title="Edit">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                            </svg>
-                        </button>
-                        <button class="admin-action-btn delete-btn" data-id="${product.id}" title="Delete">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        `;
-    }).join('');
+    tbody.innerHTML = allProducts.map(product => `
+        <tr data-id="${product.id}">
+            <td>
+                <div class="admin-product-image">
+                    <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/50'">
+                </div>
+            </td>
+            <td>
+                <div class="admin-product-name">${product.name}</div>
+            </td>
+            <td>
+                <span class="admin-category-badge">${product.category}</span>
+            </td>
+            <td>$${product.price.toFixed(2)}</td>
+            <td>
+                <span class="admin-new-badge ${product.new ? 'active' : ''}">${product.new ? 'NEW' : '-'}</span>
+            </td>
+            <td>
+                <div class="admin-action-buttons">
+                    <button class="admin-action-btn edit-btn" data-id="${product.id}" title="Edit">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                    </button>
+                    <button class="admin-action-btn delete-btn" data-id="${product.id}" title="Delete">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
 
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', () => editProduct(parseInt(btn.dataset.id)));
@@ -188,7 +157,7 @@ function renderTrashProducts() {
                             <path d="M3 3v5h5"></path>
                         </svg>
                     </button>
-                    <button class="admin-action-btn delete-btn permanent-delete" data-id="${product.id}" title="Delete Permanently">
+                    <button class="admin-action-btn permanent-delete" data-id="${product.id}" title="Delete Permanently">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
                             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -209,11 +178,10 @@ function renderTrashProducts() {
 }
 
 function updateStats() {
-    const visibleProducts = getVisibleProducts();
-    document.getElementById('total-products').textContent = visibleProducts.length;
+    document.getElementById('total-products').textContent = adminProducts.length;
     document.getElementById('admin-products-count').textContent = adminProducts.length;
-    document.getElementById('shoes-count').textContent = visibleProducts.filter(p => p.category === 'shoes').length;
-    document.getElementById('clothing-count').textContent = visibleProducts.filter(p => p.category === 'clothing').length;
+    document.getElementById('shoes-count').textContent = adminProducts.filter(p => p.category === 'shoes').length;
+    document.getElementById('clothing-count').textContent = adminProducts.filter(p => p.category === 'clothing').length;
     document.getElementById('trash-count').textContent = deletedProducts.length;
 }
 
@@ -270,87 +238,66 @@ function addProduct(productData) {
 }
 
 function updateProduct(id, productData) {
-    const existingIndex = adminProducts.findIndex(p => p.id === id);
+    const index = adminProducts.findIndex(p => p.id === id);
     
-    if (existingIndex !== -1) {
-        adminProducts[existingIndex] = {
-            ...adminProducts[existingIndex],
-            ...productData
-        };
-    } else {
-        const newProduct = {
-            id: id,
-            ...productData
-        };
-        adminProducts.push(newProduct);
+    if (index === -1) {
+        return { success: false, message: 'Product not found' };
     }
+    
+    adminProducts[index] = {
+        id: id,
+        ...productData
+    };
     
     saveAdminProducts();
     return { success: true, message: 'Product updated successfully!' };
 }
 
 function moveToTrash(id) {
-    let product = adminProducts.find(p => p.id === id);
+    const index = adminProducts.findIndex(p => p.id === id);
+    if (index === -1) return { success: false, message: 'Product not found' };
     
-    if (!product) {
-        product = products.find(p => p.id === id);
-    }
-    
-    if (!product) return { success: false, message: 'Product not found' };
-    
-    adminProducts = adminProducts.filter(p => p.id !== id);
+    const product = { ...adminProducts[index] };
+    adminProducts.splice(index, 1);
     saveAdminProducts();
     
-    deletedProducts.push({ ...product, deletedAt: new Date().toISOString() });
+    deletedProducts.push(product);
     saveDeletedProducts();
     
     return { success: true, message: 'Product moved to trash' };
 }
 
 function restoreProduct(id) {
-    const productIndex = deletedProducts.findIndex(p => p.id === id);
-    if (productIndex === -1) return { success: false, message: 'Product not found in trash' };
+    const index = deletedProducts.findIndex(p => p.id === id);
+    if (index === -1) return { success: false, message: 'Product not found in trash' };
     
-    const product = deletedProducts[productIndex];
-    deletedProducts.splice(productIndex, 1);
+    const product = { ...deletedProducts[index] };
+    deletedProducts.splice(index, 1);
     saveDeletedProducts();
     
-    const wasModified = products.find(p => p.id === id);
+    adminProducts.push(product);
+    saveAdminProducts();
     
-    if (wasModified) {
-        const newProduct = {
-            id: id,
-            name: product.name,
-            category: product.category,
-            price: product.price,
-            image: product.image,
-            new: product.new,
-            description: product.description
-        };
-        adminProducts.push(newProduct);
-        saveAdminProducts();
-    }
-    
-    return { success: true, message: 'Product restored successfully!' };
+    renderProducts();
+    renderTrashProducts();
+    updateStats();
+    showToast('Product restored successfully!');
 }
 
 function permanentlyDeleteProduct(id) {
-    const productIndex = deletedProducts.findIndex(p => p.id === id);
-    if (productIndex === -1) return { success: false, message: 'Product not found' };
+    const index = deletedProducts.findIndex(p => p.id === id);
+    if (index === -1) return { success: false, message: 'Product not found' };
     
-    deletedProducts.splice(productIndex, 1);
+    deletedProducts.splice(index, 1);
     saveDeletedProducts();
     
-    return { success: true, message: 'Product permanently deleted' };
+    renderTrashProducts();
+    updateStats();
+    showToast('Product permanently deleted!');
 }
 
 function editProduct(id) {
-    let product = adminProducts.find(p => p.id === id);
-    
-    if (!product) {
-        product = products.find(p => p.id === id);
-    }
-    
+    const product = adminProducts.find(p => p.id === id);
     if (!product) return;
 
     editingProductId = id;
