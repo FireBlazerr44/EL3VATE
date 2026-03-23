@@ -146,10 +146,8 @@ function setupEventListeners() {
     });
 
     document.querySelectorAll('.icon-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (btn.closest('#account-btn')) {
-                logout();
-            } else {
+        btn.addEventListener('click', (e) => {
+            if (!btn.closest('.profile-dropdown')) {
                 document.getElementById('cart-sidebar').classList.add('open');
             }
         });
