@@ -145,11 +145,9 @@ function setupEventListeners() {
         renderProducts();
     });
 
-    document.querySelectorAll('.icon-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            if (!btn.closest('.profile-dropdown')) {
-                document.getElementById('cart-sidebar').classList.add('open');
-            }
+    document.querySelectorAll('.cart-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementById('cart-sidebar').classList.add('open');
         });
     });
 
