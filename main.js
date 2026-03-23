@@ -22,7 +22,11 @@ function loadAllProducts() {
     const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
     const deletedIds = deletedProducts.map(p => p.id);
     
-    allProducts = adminProducts.filter(p => !deletedIds.includes(p.id));
+    if (adminProducts.length > 0) {
+        allProducts = adminProducts.filter(p => !deletedIds.includes(p.id));
+    } else {
+        allProducts = products.filter(p => !deletedIds.includes(p.id));
+    }
 }
 
 function loadCart() {
