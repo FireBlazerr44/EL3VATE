@@ -12,6 +12,7 @@ function init() {
     renderTrashProducts();
     updateStats();
     setupEventListeners();
+    updateSizeDropdown();
 }
 
 function migrateBuiltInProducts() {
@@ -380,7 +381,7 @@ function updateSizeDropdown() {
     const sizeSelect = document.getElementById('new-size-select');
     
     let availableSizes = [];
-    if (category === 'shoes') {
+    if (category === 'shoes' || category === '') {
         availableSizes = ['6', '7', '8', '9', '10', '11', '12'];
     } else if (category === 'clothing') {
         availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -454,6 +455,10 @@ function setupEventListeners() {
         btn.addEventListener('click', () => {
             const section = btn.dataset.section;
             showSection(section);
+            if (section === 'add-product') {
+                updateSizeDropdown();
+                renderSizesGrid();
+            }
             if (section !== 'add-product') {
                 resetForm();
             }
