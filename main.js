@@ -165,6 +165,13 @@ function setupEventListeners() {
             cartSidebar.classList.remove('open');
         }
     });
+
+    document.querySelectorAll('.profile-dropdown-item.signout').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    });
 }
 
 function logout() {

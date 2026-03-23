@@ -516,3 +516,191 @@ button {
         right: -100%;
     }
 }
+
+.auth-body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #111 0%, #2d2d2d 100%);
+}
+
+.auth-container {
+    background: #fff;
+    padding: 50px 60px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.auth-header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    font-weight: 400;
+    letter-spacing: 8px;
+    color: #111;
+}
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 2px solid #e5e5e5;
+    margin-bottom: 35px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 18px;
+    background: none;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #999;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    color: #111;
+    border-bottom: 2px solid #111;
+    margin-bottom: -2px;
+}
+
+.tab-btn:hover:not(.active) {
+    color: #666;
+}
+
+.auth-form {
+    display: none;
+}
+
+.auth-form.active {
+    display: block;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 16px 18px;
+    border: 1px solid #e5e5e5;
+    font-size: 14px;
+    background: #f8f8f8;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #111;
+    background: #fff;
+}
+
+.form-group label {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #999;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+    top: 0;
+    font-size: 11px;
+    background: #fff;
+    padding: 0 5px;
+    color: #111;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #111;
+}
+
+.checkbox-group label {
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 18px;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    background: #333;
+}
+
+.error-message {
+    color: #e53935;
+    font-size: 13px;
+    margin-top: 15px;
+    text-align: center;
+    min-height: 20px;
+}
+
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    min-width: 180px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+    margin-top: 10px;
+}
+
+.profile-dropdown:hover .profile-dropdown-content {
+    display: block;
+}
+
+.profile-dropdown-item {
+    display: block;
+    padding: 14px 20px;
+    font-size: 14px;
+    color: #111;
+    transition: background 0.3s;
+}
+
+.profile-dropdown-item:hover {
+    background: #f5f5f5;
+}
+
+.profile-dropdown-item.signout {
+    color: #e53935;
+    border-top: 1px solid #e5e5e5;
+}
