@@ -308,6 +308,23 @@ function setupEventListeners() {
         });
     });
 
+    document.querySelectorAll('.profile-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.profile-dropdown').forEach(dropdown => {
+                dropdown.classList.toggle('active');
+            });
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.profile-dropdown')) {
+            document.querySelectorAll('.profile-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('active');
+            });
+        }
+    });
+
     document.getElementById('close-modal').addEventListener('click', closeProductModal);
     
     document.getElementById('product-modal').addEventListener('click', (e) => {

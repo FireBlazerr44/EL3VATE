@@ -735,8 +735,7 @@ button {
     margin-top: 5px;
 }
 
-.profile-dropdown:hover .profile-dropdown-content,
-.profile-dropdown-content:hover {
+.profile-dropdown.active .profile-dropdown-content {
     display: block;
 }
 
