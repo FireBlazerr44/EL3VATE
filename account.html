@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - EL3VATE</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="account-body">
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">EL3VATE</a>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn cart-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+            </button>
+            <div class="profile-dropdown">
+                <button class="icon-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+                <div class="profile-dropdown-content">
+                    <a href="account.html" class="profile-dropdown-item">My Account</a>
+                    <a href="#" class="profile-dropdown-item">Orders</a>
+                    <a href="#" class="profile-dropdown-item" id="favorites-link">Favorites</a>
+                    <a href="auth.html" class="profile-dropdown-item signout">Sign Out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="account-main">
+        <div class="account-container">
+            <aside class="account-sidebar">
+                <h2 class="account-sidebar-title">My Account</h2>
+                <ul class="account-menu">
+                    <li><a href="#" class="account-menu-item active">Dashboard</a></li>
+                    <li><a href="#" class="account-menu-item">Orders</a></li>
+                    <li><a href="#" class="account-menu-item" id="menu-favorites">Wishlist</a></li>
+                    <li><a href="#" class="account-menu-item">Addresses</a></li>
+                    <li><a href="#" class="account-menu-item">Payment Methods</a></li>
+                    <li><a href="auth.html" class="account-menu-item signout">Sign Out</a></li>
+                </ul>
+            </aside>
+            <section class="account-content">
+                <div class="account-header">
+                    <h1>Welcome back, <span id="user-name">User</span>!</h1>
+                    <p>Manage your account and view your activity</p>
+                </div>
+                
+                <div class="account-stats">
+                    <div class="stat-card">
+                        <span class="stat-number" id="order-count">0</span>
+                        <span class="stat-label">Orders</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="wishlist-count">0</span>
+                        <span class="stat-label">Wishlist Items</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="cart-count">0</span>
+                        <span class="stat-label">Cart Items</span>
+                    </div>
+                </div>
+
+                <div class="account-section">
+                    <h3>Account Details</h3>
+                    <div class="account-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Name</span>
+                            <span class="detail-value" id="detail-name">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Email</span>
+                            <span class="detail-value" id="detail-email">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-section" id="wishlist-section">
+                    <h3>My Wishlist</h3>
+                    <div class="wishlist-grid" id="wishlist-grid">
+                        <p class="wishlist-empty">Your wishlist is empty</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="products.js"></script>
+    <script src="account.js"></script>
+</body>
+</html>
