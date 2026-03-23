@@ -13,6 +13,39 @@ body {
     min-height: 100vh;
 }
 
+.promo-banner {
+    background: linear-gradient(90deg, #111 0%, #e53935 50%, #111 100%);
+    color: #fff;
+    padding: 12px 0;
+    overflow: hidden;
+    text-align: center;
+}
+
+.promo-content {
+    display: flex;
+    animation: scroll-left 20s linear infinite;
+    white-space: nowrap;
+}
+
+.promo-content span {
+    padding: 0 50px;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.promo-content strong {
+    color: #ffeb3b;
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
 a {
     text-decoration: none;
     color: inherit;
@@ -1458,4 +1491,48 @@ button {
     .form-row {
         grid-template-columns: 1fr;
     }
+}
+
+.promo-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.promo-input input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #e5e5e5;
+    font-size: 14px;
+}
+
+.promo-input button {
+    padding: 12px 20px;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.promo-input button:hover {
+    background: #333;
+}
+
+.promo-message {
+    font-size: 13px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.promo-message.success {
+    color: #2e7d32;
+    background: #e8f5e9;
+}
+
+.promo-message.error {
+    color: #c62828;
+    background: #ffebee;
 }

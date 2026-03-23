@@ -1,4 +1,6 @@
 let cart = [];
+let discount = 0;
+let promoApplied = false;
 
 function init() {
     loadCart();
@@ -35,8 +37,13 @@ function renderCheckout() {
     `).join('');
     
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    discount = promoApplied ? subtotal * 0.10 : 0;
+    const total = subtotal - discount;
+    
     document.getElementById('checkout-subtotal').textContent = `$${subtotal.toFixed(2)}`;
-    document.getElementById('checkout-total').textContent = `$${subtotal.toFixed(2)}`;
+    document.getElementById('checkout-discount').textContent = `-$${discount.toFixed(2)}`;
+    document.getElementById('checkout-discount').closest('.checkout-row').style.display = promoApplied ? 'flex' : 'none';
+    document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
 }
 
 function setupEventListeners() {
@@ -56,6 +63,24 @@ function setupEventListeners() {
     document.getElementById('cvv').addEventListener('input', (e) => {
         e.target.value = e.target.value.replace(/\D/g, '');
     });
+    
+    document.getElementById('apply-promo').addEventListener('click', () => {
+        const promoInput = document.getElementById('promo-code').value.trim().toUpperCase();
+        const promoMessage = document.getElementById('promo-message');
+        
+        if (promoInput === 'ELEVATEYOURGAME') {
+            promoApplied = true;
+            promoMessage.textContent = '✓ Code applied! 10% discount';
+            promoMessage.className = 'promo-message success';
+            renderCheckout();
+        } else if (promoInput === '') {
+            promoMessage.textContent = 'Please enter a promo code';
+            promoMessage.className = 'promo-message error';
+        } else {
+            promoMessage.textContent = 'Invalid promo code';
+            promoMessage.className = 'promo-message error';
+        }
+    });
 }
 
 function placeOrder() {
@@ -64,10 +89,15 @@ function placeOrder() {
         return;
     }
     
+    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const total = subtotal - (promoApplied ? subtotal * 0.10 : 0);
+    
     const order = {
         id: Date.now(),
         items: [...cart],
-        total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        total: total,
+        discount: promoApplied ? subtotal * 0.10 : 0,
+        promoCode: promoApplied ? 'ELEVATEYOURGAME' : null,
         date: new Date().toISOString(),
         status: 'Processing'
     };

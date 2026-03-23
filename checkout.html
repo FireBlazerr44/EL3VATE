@@ -95,12 +95,21 @@
 
             <div class="checkout-summary-section">
                 <h3>Order Summary</h3>
+                <div class="promo-input">
+                    <input type="text" id="promo-code" placeholder="Promo code">
+                    <button id="apply-promo">Apply</button>
+                </div>
+                <div id="promo-message"></div>
                 <div class="checkout-items" id="checkout-items">
                 </div>
                 <div class="checkout-totals">
                     <div class="checkout-row">
                         <span>Subtotal</span>
                         <span id="checkout-subtotal">$0.00</span>
+                    </div>
+                    <div class="checkout-row discount" id="discount-row" style="display: none;">
+                        <span>Discount (10%)</span>
+                        <span id="checkout-discount">-$0.00</span>
                     </div>
                     <div class="checkout-row">
                         <span>Shipping</span>
