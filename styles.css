@@ -25,20 +25,21 @@ body {
     z-index: 200;
 }
 
-.promo-content {
+.promo-wrapper {
     display: flex;
-    white-space: nowrap;
+    width: fit-content;
+    animation: scroll-left 20s linear infinite;
 }
 
-.promo-content span {
+.promo-wrapper span {
     padding: 0 80px;
     font-size: 13px;
     font-weight: 500;
-    animation: scroll-left 15s linear infinite;
+    white-space: nowrap;
     flex-shrink: 0;
 }
 
-.promo-content strong {
+.promo-wrapper strong {
     color: #fff;
 }
 
@@ -47,7 +48,7 @@ body {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(-200%);
+        transform: translateX(-50%);
     }
 }
 
