@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EL3VATE - Shop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <a href="index.html" class="logo">EL3VATE</a>
+            <nav class="nav-links">
+                <a href="#" class="nav-link active">New & Featured</a>
+                <a href="#" class="nav-link">Men</a>
+                <a href="#" class="nav-link">Women</a>
+                <a href="#" class="nav-link">Kids</a>
+                <a href="#" class="nav-link">Sale</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                </button>
+            </div>
+            <button class="icon-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <path d="M16 10a4 4 0 0 1-8 0"></path>
+                </svg>
+            </button>
+            <button class="icon-btn" id="account-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1 class="hero-title">EL3VATE</h1>
+        <p class="hero-tagline">ELEVATE YOUR GAME</p>
+    </section>
+
+    <main class="main-content">
+        <aside class="sidebar">
+            <h3 class="sidebar-title">Categories</h3>
+            <ul class="category-list">
+                <li><button class="category-btn active" data-category="all">All Products</button></li>
+                <li><button class="category-btn" data-category="shoes">Shoes</button></li>
+                <li><button class="category-btn" data-category="clothing">Clothing</button></li>
+                <li><button class="category-btn" data-category="accessories">Accessories</button></li>
+                <li><button class="category-btn" data-category="equipment">Equipment</button></li>
+            </ul>
+            <h3 class="sidebar-title">Price Range</h3>
+            <div class="price-filter">
+                <input type="range" min="0" max="500" value="500" class="price-slider" id="price-slider">
+                <p class="price-value">Up to $<span id="price-display">500</span></p>
+            </div>
+        </aside>
+
+        <section class="products-section">
+            <div class="products-header">
+                <h2 class="products-title">All Products</h2>
+                <div class="products-sort">
+                    <select id="sort-select">
+                        <option value="featured">Featured</option>
+                        <option value="newest">Newest</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+            <div class="products-grid" id="products-grid">
+            </div>
+        </section>
+    </main>
+
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Your Bag</h3>
+            <button class="close-cart" id="close-cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items">
+            <p class="cart-empty">Your bag is empty</p>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="checkout-btn">CHECK OUT</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Added to bag!</div>
+
+    <script src="products.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biagio Shop - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>EL3VATE</h1>
+        </div>
+        
+        <div class="auth-tabs">
+            <button class="tab-btn active" data-tab="login">LOG IN</button>
+            <button class="tab-btn" data-tab="signup">SIGN UP</button>
+        </div>
+
+        <div class="auth-form-container">
+            <form id="login-form" class="auth-form active">
+                <div class="form-group">
+                    <input type="email" id="login-email" placeholder=" " required>
+                    <label for="login-email">Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-password" placeholder=" " required>
+                    <label for="login-password">Password</label>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="remember-me">
+                    <label for="remember-me">Remember me</label>
+                </div>
+                <button type="submit" class="auth-btn">LOG IN</button>
+                <p class="error-message" id="login-error"></p>
+            </form>
+
+            <form id="signup-form" class="auth-form">
+                <div class="form-group">
+                    <input type="text" id="signup-name" placeholder=" " required>
+                    <label for="signup-name">Full Name</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="signup-email" placeholder=" " required>
+                    <label for="signup-email">Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-password" placeholder=" " required>
+                    <label for="signup-password">Password</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signup-confirm" placeholder=" " required>
+                    <label for="signup-confirm">Confirm Password</label>
+                </div>
+                <button type="submit" class="auth-btn">SIGN UP</button>
+                <p class="error-message" id="signup-error"></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>
