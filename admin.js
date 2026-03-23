@@ -334,6 +334,7 @@ function resetForm() {
     editingProductId = null;
     currentProductSizes = [];
     renderSizesGrid();
+    updateSizeDropdown();
     document.getElementById('form-title').textContent = 'Add New Product';
     document.getElementById('submit-btn').textContent = 'Add Product';
     document.getElementById('cancel-edit-btn').style.display = 'none';
@@ -346,9 +347,14 @@ function renderSizesGrid() {
     if (!grid) return;
     grid.innerHTML = currentProductSizes.map((item, index) => `
         <div class="admin-size-item">
-            <span class="size-label">${item.size}</span>
-            <input type="number" class="size-stock" value="${item.stock}" min="0" data-index="${index}">
-            <button type="button" class="remove-size" data-index="${index}">&times;</button>
+            <div class="size-info">
+                <span class="size-label">${item.size}</span>
+                <div class="size-stock-wrapper">
+                    <span class="size-stock-label">Stock</span>
+                    <input type="number" class="size-stock" value="${item.stock}" min="0" data-index="${index}">
+                </div>
+            </div>
+            <button type="button" class="remove-size" data-index="${index}" title="Remove">&times;</button>
         </div>
     `).join('');
 
@@ -364,19 +370,43 @@ function renderSizesGrid() {
             const index = parseInt(e.target.dataset.index);
             currentProductSizes.splice(index, 1);
             renderSizesGrid();
+            updateSizeDropdown();
         });
     });
 }
 
+function updateSizeDropdown() {
+    const category = document.getElementById('product-category').value;
+    const sizeSelect = document.getElementById('new-size-select');
+    
+    let availableSizes = [];
+    if (category === 'shoes') {
+        availableSizes = ['6', '7', '8', '9', '10', '11', '12'];
+    } else if (category === 'clothing') {
+        availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    } else {
+        availableSizes = ['One Size'];
+    }
+    
+    const existingSizes = currentProductSizes.map(s => s.size);
+    const remainingSizes = availableSizes.filter(s => !existingSizes.includes(s));
+    
+    sizeSelect.innerHTML = '<option value="">Select Size</option>' + 
+        remainingSizes.map(s => `<option value="${s}">${s}</option>`).join('');
+}
+
 function addSize(size, stock) {
-    if (!size) return;
+    if (!size) {
+        showToast('Please select a size', 'error');
+        return;
+    }
     if (currentProductSizes.some(s => s.size === size)) {
-        showToast('Size already exists', 'error');
+        showToast('Size already added', 'error');
         return;
     }
     currentProductSizes.push({ size, stock: parseInt(stock) || 0 });
     renderSizesGrid();
-    document.getElementById('new-size-select').value = '';
+    updateSizeDropdown();
     document.getElementById('new-size-stock').value = '10';
 }
 
@@ -396,6 +426,8 @@ function updateSizesFromCategory() {
         currentProductSizes = defaultSizes.map(size => ({ size, stock: 10 }));
         renderSizesGrid();
     }
+    
+    updateSizeDropdown();
 }
 
 function showDeleteModal(id) {

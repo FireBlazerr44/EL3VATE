@@ -574,6 +574,12 @@ model-viewer {
     font-weight: 500;
 }
 
+.cart-item-size {
+    font-size: 12px;
+    color: #999;
+    margin-top: 2px;
+}
+
 .cart-item-price {
     font-size: 14px;
     font-weight: 700;
@@ -1044,6 +1050,23 @@ model-viewer {
     border-color: #111;
     background: #111;
     color: #fff;
+}
+
+.size-btn.out-of-stock {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.size-btn.out-of-stock:hover {
+    border-color: #e5e5e5;
+    background: #fff;
+    color: #999;
+}
+
+.size-btn .stock-zero {
+    display: block;
+    font-size: 9px;
 }
 
 .add-to-cart-modal {
@@ -2066,6 +2089,152 @@ model-viewer {
     gap: 15px;
     padding-top: 20px;
     border-top: 1px solid #e5e5e5;
+}
+
+.admin-sizes-section {
+    background: #fafafa;
+    padding: 25px;
+    margin-bottom: 25px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+}
+
+.admin-sizes-section h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #111;
+}
+
+.admin-sizes-hint {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.admin-sizes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.admin-size-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+
+.admin-size-item:hover {
+    border-color: #111;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.admin-size-item .size-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-size-item .size-label {
+    font-weight: 700;
+    font-size: 15px;
+    background: #111;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    min-width: 45px;
+    text-align: center;
+}
+
+.admin-size-item .size-stock-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-size-item .size-stock-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-size-item .size-stock {
+    width: 70px;
+    padding: 8px 10px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.admin-size-item .size-stock:focus {
+    outline: none;
+    border-color: #111;
+}
+
+.admin-size-item .remove-size {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 22px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.admin-size-item .remove-size:hover {
+    color: #e53935;
+    background: #fee;
+}
+
+.admin-add-size {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
+.admin-add-size select {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.admin-add-size select:focus {
+    outline: none;
+    border-color: #111;
+}
+
+.admin-add-size input {
+    width: 80px;
+    padding: 12px 15px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.admin-add-size input:focus {
+    outline: none;
+    border-color: #111;
 }
 
 .admin-btn {
