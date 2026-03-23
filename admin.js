@@ -343,6 +343,7 @@ function resetForm() {
 
 function renderSizesGrid() {
     const grid = document.getElementById('admin-sizes-grid');
+    if (!grid) return;
     grid.innerHTML = currentProductSizes.map((item, index) => `
         <div class="admin-size-item">
             <span class="size-label">${item.size}</span>
