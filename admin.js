@@ -1,12 +1,13 @@
 let adminProducts = [];
-let deletedProductIds = [];
+let deletedProducts = [];
 let editingProductId = null;
 let deleteProductId = null;
 
 function init() {
     checkAdminAuth();
-    loadAdminProducts();
+    loadData();
     renderProducts();
+    renderTrashProducts();
     updateStats();
     setupEventListeners();
 }
@@ -19,35 +20,44 @@ function checkAdminAuth() {
     }
 }
 
-function loadAdminProducts() {
+function loadData() {
     const stored = localStorage.getItem('adminProducts');
     adminProducts = stored ? JSON.parse(stored) : [];
     
-    const deleted = localStorage.getItem('deletedProductIds');
-    deletedProductIds = deleted ? JSON.parse(deleted) : [];
+    const deleted = localStorage.getItem('deletedProducts');
+    deletedProducts = deleted ? JSON.parse(deleted) : [];
 }
 
 function saveAdminProducts() {
     localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
 }
 
-function saveDeletedProductIds() {
-    localStorage.setItem('deletedProductIds', JSON.stringify(deletedProductIds));
+function saveDeletedProducts() {
+    localStorage.setItem('deletedProducts', JSON.stringify(deletedProducts));
+}
+
+function getModifiedProductIds() {
+    return adminProducts.map(p => p.id);
 }
 
 function getAllProducts() {
     return [...products, ...adminProducts];
 }
 
+function getVisibleProducts() {
+    const modifiedIds = getModifiedProductIds();
+    return [...products, ...adminProducts].filter(p => !modifiedIds.includes(p.id) || adminProducts.some(ap => ap.id === p.id));
+}
+
 function getNextProductId() {
-    const allProds = getAllProducts();
+    const allProds = [...products, ...adminProducts];
     if (allProds.length === 0) return 1;
     return Math.max(...allProds.map(p => p.id)) + 1;
 }
 
 function renderProducts(filter = '', category = 'all') {
     const tbody = document.getElementById('admin-products-tbody');
-    let allProducts = getAllProducts();
+    let allProducts = getVisibleProducts();
 
     if (category !== 'all') {
         allProducts = allProducts.filter(p => p.category === category);
@@ -123,12 +133,69 @@ function renderProducts(filter = '', category = 'all') {
     });
 }
 
+function renderTrashProducts() {
+    const tbody = document.getElementById('trash-products-tbody');
+    
+    if (deletedProducts.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="admin-empty-state">
+                    Trash is empty
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    tbody.innerHTML = deletedProducts.map(product => `
+        <tr data-id="${product.id}">
+            <td>
+                <div class="admin-product-image">
+                    <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/50'">
+                </div>
+            </td>
+            <td>
+                <div class="admin-product-name">${product.name}</div>
+            </td>
+            <td>
+                <span class="admin-category-badge">${product.category}</span>
+            </td>
+            <td>$${product.price.toFixed(2)}</td>
+            <td>
+                <div class="admin-action-buttons">
+                    <button class="admin-action-btn restore-btn" data-id="${product.id}" title="Restore">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                            <path d="M3 3v5h5"></path>
+                        </svg>
+                    </button>
+                    <button class="admin-action-btn delete-btn permanent-delete" data-id="${product.id}" title="Delete Permanently">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+
+    document.querySelectorAll('.restore-btn').forEach(btn => {
+        btn.addEventListener('click', () => restoreProduct(parseInt(btn.dataset.id)));
+    });
+
+    document.querySelectorAll('.permanent-delete').forEach(btn => {
+        btn.addEventListener('click', () => permanentlyDeleteProduct(parseInt(btn.dataset.id)));
+    });
+}
+
 function updateStats() {
-    const allProducts = getAllProducts().filter(p => !deletedProductIds.includes(p.id));
-    document.getElementById('total-products').textContent = allProducts.length;
+    const visibleProducts = getVisibleProducts();
+    document.getElementById('total-products').textContent = visibleProducts.length;
     document.getElementById('admin-products-count').textContent = adminProducts.length;
-    document.getElementById('shoes-count').textContent = allProducts.filter(p => p.category === 'shoes').length;
-    document.getElementById('clothing-count').textContent = allProducts.filter(p => p.category === 'clothing').length;
+    document.getElementById('shoes-count').textContent = visibleProducts.filter(p => p.category === 'shoes').length;
+    document.getElementById('clothing-count').textContent = visibleProducts.filter(p => p.category === 'clothing').length;
+    document.getElementById('trash-count').textContent = deletedProducts.length;
 }
 
 function showSection(sectionName) {
@@ -173,11 +240,6 @@ function validateProduct(name, category, price, image, description) {
 }
 
 function addProduct(productData) {
-    const duplicate = adminProducts.find(p => p.name.toLowerCase() === productData.name.toLowerCase());
-    if (duplicate) {
-        return { success: false, message: 'A product with this name already exists' };
-    }
-
     const newProduct = {
         id: getNextProductId(),
         ...productData
@@ -191,42 +253,76 @@ function addProduct(productData) {
 function updateProduct(id, productData) {
     const existingIndex = adminProducts.findIndex(p => p.id === id);
     
-    const originalProduct = products.find(p => p.id === id);
-    if (originalProduct) {
-        const updatedProduct = {
-            id: id,
-            ...productData,
-            isModified: true
+    if (existingIndex !== -1) {
+        adminProducts[existingIndex] = {
+            ...adminProducts[existingIndex],
+            ...productData
         };
-        
-        if (existingIndex !== -1) {
-            adminProducts[existingIndex] = updatedProduct;
-        } else {
-            adminProducts.push(updatedProduct);
-        }
     } else {
-        if (existingIndex !== -1) {
-            adminProducts[existingIndex] = { ...adminProducts[existingIndex], ...productData };
-        } else {
-            return { success: false, message: 'Product not found' };
-        }
+        const newProduct = {
+            id: id,
+            ...productData
+        };
+        adminProducts.push(newProduct);
     }
     
     saveAdminProducts();
     return { success: true, message: 'Product updated successfully!' };
 }
 
-function deleteProduct(id) {
-    deletedProductIds.push(id);
-    saveDeletedProductIds();
+function moveToTrash(id) {
+    let product = adminProducts.find(p => p.id === id);
     
-    const adminIndex = adminProducts.findIndex(p => p.id === id);
-    if (adminIndex !== -1) {
-        adminProducts.splice(adminIndex, 1);
+    if (!product) {
+        product = products.find(p => p.id === id);
+    }
+    
+    if (!product) return { success: false, message: 'Product not found' };
+    
+    adminProducts = adminProducts.filter(p => p.id !== id);
+    saveAdminProducts();
+    
+    deletedProducts.push({ ...product, deletedAt: new Date().toISOString() });
+    saveDeletedProducts();
+    
+    return { success: true, message: 'Product moved to trash' };
+}
+
+function restoreProduct(id) {
+    const productIndex = deletedProducts.findIndex(p => p.id === id);
+    if (productIndex === -1) return { success: false, message: 'Product not found in trash' };
+    
+    const product = deletedProducts[productIndex];
+    deletedProducts.splice(productIndex, 1);
+    saveDeletedProducts();
+    
+    const wasModified = products.find(p => p.id === id);
+    
+    if (wasModified) {
+        const newProduct = {
+            id: id,
+            name: product.name,
+            category: product.category,
+            price: product.price,
+            image: product.image,
+            new: product.new,
+            description: product.description
+        };
+        adminProducts.push(newProduct);
         saveAdminProducts();
     }
     
-    return { success: true, message: 'Product deleted successfully!' };
+    return { success: true, message: 'Product restored successfully!' };
+}
+
+function permanentlyDeleteProduct(id) {
+    const productIndex = deletedProducts.findIndex(p => p.id === id);
+    if (productIndex === -1) return { success: false, message: 'Product not found' };
+    
+    deletedProducts.splice(productIndex, 1);
+    saveDeletedProducts();
+    
+    return { success: true, message: 'Product permanently deleted' };
 }
 
 function editProduct(id) {
@@ -360,10 +456,11 @@ function setupEventListeners() {
 
     document.getElementById('confirm-delete-btn').addEventListener('click', () => {
         if (deleteProductId) {
-            const result = deleteProduct(deleteProductId);
+            const result = moveToTrash(deleteProductId);
             if (result.success) {
                 showToast(result.message);
                 renderProducts();
+                renderTrashProducts();
                 updateStats();
             } else {
                 showToast(result.message, 'error');

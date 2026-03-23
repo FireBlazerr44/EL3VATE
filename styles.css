@@ -1767,6 +1767,27 @@ model-viewer {
     border-left: 3px solid #111;
 }
 
+.trash-count-badge {
+    background: #e53935;
+    color: #fff;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.admin-section-desc {
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.permanent-delete:hover {
+    border-color: #111 !important;
+    background: #111 !important;
+    color: #fff !important;
+}
+
 .admin-main {
     flex: 1;
     padding: 30px 40px;
