@@ -2,14 +2,23 @@ let adminProducts = [];
 let deletedProducts = [];
 let editingProductId = null;
 let deleteProductId = null;
+let currentProductSizes = [];
 
 function init() {
     checkAdminAuth();
     loadData();
+    migrateBuiltInProducts();
     renderProducts();
     renderTrashProducts();
     updateStats();
     setupEventListeners();
+}
+
+function migrateBuiltInProducts() {
+    if (adminProducts.length === 0 && products.length > 0) {
+        adminProducts = products.map(p => ({ ...p }));
+        saveAdminProducts();
+    }
 }
 
 function checkAdminAuth() {
@@ -308,6 +317,9 @@ function editProduct(id) {
     document.getElementById('product-image').value = product.image;
     document.getElementById('product-description').value = product.description;
     document.getElementById('product-new').checked = product.new;
+    
+    currentProductSizes = product.sizes ? [...product.sizes.map(s => ({ ...s }))] : [];
+    renderSizesGrid();
 
     document.getElementById('form-title').textContent = 'Edit Product';
     document.getElementById('submit-btn').textContent = 'Update Product';
@@ -320,11 +332,69 @@ function resetForm() {
     document.getElementById('product-form').reset();
     document.getElementById('product-id').value = '';
     editingProductId = null;
+    currentProductSizes = [];
+    renderSizesGrid();
     document.getElementById('form-title').textContent = 'Add New Product';
     document.getElementById('submit-btn').textContent = 'Add Product';
     document.getElementById('cancel-edit-btn').style.display = 'none';
     document.getElementById('form-message').textContent = '';
     document.getElementById('form-message').className = 'admin-form-message';
+}
+
+function renderSizesGrid() {
+    const grid = document.getElementById('admin-sizes-grid');
+    grid.innerHTML = currentProductSizes.map((item, index) => `
+        <div class="admin-size-item">
+            <span class="size-label">${item.size}</span>
+            <input type="number" class="size-stock" value="${item.stock}" min="0" data-index="${index}">
+            <button type="button" class="remove-size" data-index="${index}">&times;</button>
+        </div>
+    `).join('');
+
+    document.querySelectorAll('.admin-size-item .size-stock').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            currentProductSizes[index].stock = parseInt(e.target.value) || 0;
+        });
+    });
+
+    document.querySelectorAll('.admin-size-item .remove-size').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            currentProductSizes.splice(index, 1);
+            renderSizesGrid();
+        });
+    });
+}
+
+function addSize(size, stock) {
+    if (!size) return;
+    if (currentProductSizes.some(s => s.size === size)) {
+        showToast('Size already exists', 'error');
+        return;
+    }
+    currentProductSizes.push({ size, stock: parseInt(stock) || 0 });
+    renderSizesGrid();
+    document.getElementById('new-size-select').value = '';
+    document.getElementById('new-size-stock').value = '10';
+}
+
+function updateSizesFromCategory() {
+    const category = document.getElementById('product-category').value;
+    let defaultSizes = [];
+    
+    if (category === 'shoes') {
+        defaultSizes = ['6', '7', '8', '9', '10', '11', '12'];
+    } else if (category === 'clothing') {
+        defaultSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    } else {
+        defaultSizes = ['One Size'];
+    }
+    
+    if (currentProductSizes.length === 0) {
+        currentProductSizes = defaultSizes.map(size => ({ size, stock: 10 }));
+        renderSizesGrid();
+    }
 }
 
 function showDeleteModal(id) {
@@ -369,6 +439,16 @@ function setupEventListeners() {
         renderProducts(filter, category);
     });
 
+    document.getElementById('product-category').addEventListener('change', () => {
+        updateSizesFromCategory();
+    });
+
+    document.getElementById('add-size-btn').addEventListener('click', () => {
+        const size = document.getElementById('new-size-select').value;
+        const stock = document.getElementById('new-size-stock').value;
+        addSize(size, stock);
+    });
+
     document.getElementById('product-form').addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -387,7 +467,14 @@ function setupEventListeners() {
             return;
         }
 
-        const productData = { name, category, price, image, description, new: isNew };
+        if (currentProductSizes.length === 0) {
+            const formMessage = document.getElementById('form-message');
+            formMessage.textContent = 'Please add at least one size with stock';
+            formMessage.className = 'admin-form-message error';
+            return;
+        }
+
+        const productData = { name, category, price, image, description, new: isNew, sizes: [...currentProductSizes] };
         let result;
 
         if (editingProductId) {
