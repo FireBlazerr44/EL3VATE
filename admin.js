@@ -15,9 +15,13 @@ function init() {
 }
 
 function migrateBuiltInProducts() {
-    if (adminProducts.length === 0 && products.length > 0) {
+    console.log('Products array:', products);
+    console.log('Admin products before:', adminProducts);
+    
+    if (adminProducts.length === 0 && typeof products !== 'undefined' && products.length > 0) {
         adminProducts = products.map(p => ({ ...p }));
         saveAdminProducts();
+        console.log('Admin products after migration:', adminProducts);
     }
 }
 
