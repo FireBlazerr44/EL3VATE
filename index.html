@@ -10,8 +10,15 @@
 <body>
     <header class="header">
         <div class="header-left">
+            <button class="hamburger-btn" id="hamburger-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
             <a href="index.html" class="logo">EL3VATE</a>
-            <nav class="nav-links">
+            <nav class="nav-links" id="nav-links">
                 <a href="#" class="nav-link active">New & Featured</a>
                 <a href="#" class="nav-link">Men</a>
                 <a href="#" class="nav-link">Women</a>
@@ -35,6 +42,7 @@
                     <line x1="3" y1="6" x2="21" y2="6"></line>
                     <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
+                <span class="cart-badge" id="cart-badge">0</span>
             </button>
             <div class="profile-dropdown">
                 <button class="icon-btn profile-btn">
@@ -94,7 +102,7 @@
 
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
-            <h3>Your Bag</h3>
+            <h3>Your Bag (<span id="cart-count">0</span> items)</h3>
             <button class="close-cart" id="close-cart">&times;</button>
         </div>
         <div class="cart-items" id="cart-items">
@@ -105,7 +113,7 @@
                 <span>Total</span>
                 <span id="cart-total">$0.00</span>
             </div>
-            <button class="checkout-btn">CHECK OUT</button>
+            <button class="checkout-btn" id="checkout-btn">CHECK OUT</button>
         </div>
     </div>
 

@@ -117,7 +117,11 @@ function updateCartUI() {
             <div class="cart-item-details">
                 <h4 class="cart-item-name">${item.name}</h4>
                 <p class="cart-item-price">$${(item.price * item.quantity).toFixed(2)}</p>
-                <p class="cart-item-qty">Qty: ${item.quantity}</p>
+                <div class="cart-item-qty">
+                    <button class="qty-btn qty-minus" data-id="${item.id}">&minus;</button>
+                    <span>${item.quantity}</span>
+                    <button class="qty-btn qty-plus" data-id="${item.id}">&plus;</button>
+                </div>
             </div>
             <button class="cart-item-remove" data-id="${item.id}">&times;</button>
         </div>
@@ -126,9 +130,25 @@ function updateCartUI() {
     const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     cartTotal.textContent = `$${total.toFixed(2)}`;
     
+    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+    document.getElementById('cart-count').textContent = totalItems;
+    document.getElementById('cart-badge').textContent = totalItems;
+    
     document.querySelectorAll('.cart-item-remove').forEach(btn => {
         btn.addEventListener('click', () => {
             removeFromCart(parseInt(btn.dataset.id));
+        });
+    });
+    
+    document.querySelectorAll('.qty-minus').forEach(btn => {
+        btn.addEventListener('click', () => {
+            updateQuantity(parseInt(btn.dataset.id), -1);
+        });
+    });
+    
+    document.querySelectorAll('.qty-plus').forEach(btn => {
+        btn.addEventListener('click', () => {
+            updateQuantity(parseInt(btn.dataset.id), 1);
         });
     });
 }
@@ -136,6 +156,18 @@ function updateCartUI() {
 function removeFromCart(productId) {
     cart = cart.filter(item => item.id !== productId);
     updateCartUI();
+}
+
+function updateQuantity(productId, change) {
+    const item = cart.find(item => item.id === productId);
+    if (item) {
+        item.quantity += change;
+        if (item.quantity <= 0) {
+            removeFromCart(productId);
+        } else {
+            updateCartUI();
+        }
+    }
 }
 
 function showToast() {
@@ -341,5 +373,17 @@ function logout() {
     sessionStorage.removeItem('currentUser');
     window.location.href = 'auth.html';
 }
+
+document.getElementById('checkout-btn').addEventListener('click', () => {
+    if (cart.length > 0) {
+        window.location.href = 'checkout.html';
+    } else {
+        showToastMessage('Your cart is empty');
+    }
+});
+
+document.getElementById('hamburger-btn').addEventListener('click', () => {
+    document.getElementById('nav-links').classList.toggle('active');
+});
 
 document.addEventListener('DOMContentLoaded', init);
