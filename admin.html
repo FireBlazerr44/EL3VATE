@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EL3VATE - Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <div class="admin-header">
+        <div class="admin-header-left">
+            <a href="index.html" class="logo-link">
+                <div class="spinning-logo">
+                    <svg viewBox="0 0 100 100">
+                        <defs>
+                            <linearGradient id="logoGradAdmin" x1="0%" y1="100%" x2="0%" y2="0%">
+                                <stop offset="0%" style="stop-color:#111"/>
+                                <stop offset="100%" style="stop-color:#444"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M50 10 L80 70 L50 55 L20 70 Z" fill="url(#logoGradAdmin)"/>
+                        <circle cx="50" cy="80" r="8" fill="url(#logoGradAdmin)"/>
+                    </svg>
+                </div>
+            </a>
+            <h1 class="logo">EL3VATE ADMIN</h1>
+        </div>
+        <div class="admin-header-right">
+            <a href="index.html" class="admin-nav-link">Back to Shop</a>
+            <button class="admin-logout-btn" id="admin-logout-btn">Sign Out</button>
+        </div>
+    </div>
+
+    <div class="admin-container">
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <button class="admin-nav-btn active" data-section="products">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    Products
+                </button>
+                <button class="admin-nav-btn" data-section="add-product">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    Add Product
+                </button>
+                <button class="admin-nav-btn" data-section="orders">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                    </svg>
+                    Orders
+                </button>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <section class="admin-section active" id="products-section">
+                <div class="admin-section-header">
+                    <h2>Product Management</h2>
+                    <div class="admin-actions">
+                        <input type="text" id="admin-search" class="admin-search-input" placeholder="Search products...">
+                        <select id="admin-category-filter" class="admin-filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="shoes">Shoes</option>
+                            <option value="clothing">Clothing</option>
+                            <option value="accessories">Accessories</option>
+                            <option value="equipment">Equipment</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="admin-stats">
+                    <div class="admin-stat-card">
+                        <span class="admin-stat-number" id="total-products">0</span>
+                        <span class="admin-stat-label">Total Products</span>
+                    </div>
+                    <div class="admin-stat-card">
+                        <span class="admin-stat-number" id="admin-products-count">0</span>
+                        <span class="admin-stat-label">Admin Products</span>
+                    </div>
+                    <div class="admin-stat-card">
+                        <span class="admin-stat-number" id="shoes-count">0</span>
+                        <span class="admin-stat-label">Shoes</span>
+                    </div>
+                    <div class="admin-stat-card">
+                        <span class="admin-stat-number" id="clothing-count">0</span>
+                        <span class="admin-stat-label">Clothing</span>
+                    </div>
+                </div>
+                <div class="admin-products-table-wrapper">
+                    <table class="admin-products-table">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>New</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-products-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="admin-section" id="add-product-section">
+                <div class="admin-section-header">
+                    <h2 id="form-title">Add New Product</h2>
+                </div>
+                <form id="product-form" class="admin-product-form">
+                    <input type="hidden" id="product-id">
+                    <div class="admin-form-grid">
+                        <div class="admin-form-group">
+                            <label for="product-name">Product Name *</label>
+                            <input type="text" id="product-name" required placeholder="Enter product name">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="product-category">Category *</label>
+                            <select id="product-category" required>
+                                <option value="">Select category</option>
+                                <option value="shoes">Shoes</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="accessories">Accessories</option>
+                                <option value="equipment">Equipment</option>
+                            </select>
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="product-price">Price *</label>
+                            <input type="number" id="product-price" required min="0.01" step="0.01" placeholder="0.00">
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="product-image">Image URL *</label>
+                            <input type="url" id="product-image" required placeholder="https://example.com/image.jpg">
+                        </div>
+                        <div class="admin-form-group admin-form-group-full">
+                            <label for="product-description">Description *</label>
+                            <textarea id="product-description" required rows="4" placeholder="Enter product description"></textarea>
+                        </div>
+                        <div class="admin-form-group">
+                            <label for="product-new">
+                                <input type="checkbox" id="product-new">
+                                Mark as New Product
+                            </label>
+                        </div>
+                    </div>
+                    <div class="admin-form-actions">
+                        <button type="submit" class="admin-btn admin-btn-primary" id="submit-btn">Add Product</button>
+                        <button type="button" class="admin-btn admin-btn-secondary" id="cancel-edit-btn" style="display: none;">Cancel</button>
+                    </div>
+                </form>
+                <div id="form-message" class="admin-form-message"></div>
+            </section>
+
+            <section class="admin-section" id="orders-section">
+                <div class="admin-section-header">
+                    <h2>Recent Orders</h2>
+                </div>
+                <div class="admin-orders-empty">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    <p>No orders yet</p>
+                    <span>Orders will appear here when customers make purchases</span>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="admin-modal" id="delete-modal">
+        <div class="admin-modal-content">
+            <h3>Delete Product</h3>
+            <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+            <div class="admin-modal-actions">
+                <button class="admin-btn admin-btn-secondary" id="cancel-delete-btn">Cancel</button>
+                <button class="admin-btn admin-btn-danger" id="confirm-delete-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="admin-toast"></div>
+
+    <script src="products.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
