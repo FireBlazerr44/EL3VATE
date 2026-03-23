@@ -14,11 +14,18 @@ function init() {
 }
 
 function migrateBuiltInProducts() {
-    const stored = localStorage.getItem('adminProducts');
-    const existingAdminProducts = stored ? JSON.parse(stored) : [];
+    const builtInIds = products.map(p => p.id);
+    const adminIds = adminProducts.map(p => p.id);
     
-    if (existingAdminProducts.length === 0 && products.length > 0) {
-        adminProducts = products.map(p => ({ ...p }));
+    const missingIds = builtInIds.filter(id => !adminIds.includes(id));
+    
+    if (missingIds.length > 0) {
+        missingIds.forEach(id => {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                adminProducts.push({ ...product });
+            }
+        });
         saveAdminProducts();
     }
 }
