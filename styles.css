@@ -712,3 +712,193 @@ button {
     color: #e53935;
     border-top: 1px solid #e5e5e5;
 }
+
+.product-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 500;
+    overflow-y: auto;
+}
+
+.product-modal.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-modal-content {
+    background: #fff;
+    width: 90%;
+    max-width: 900px;
+    position: relative;
+    animation: modalSlide 0.3s ease;
+}
+
+@keyframes modalSlide {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 10;
+    color: #666;
+}
+
+.close-modal:hover {
+    color: #111;
+}
+
+.product-modal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.product-modal-image {
+    background: #f5f5f5;
+    aspect-ratio: 1;
+}
+
+.product-modal-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-modal-details {
+    padding: 40px;
+}
+
+.product-modal-category {
+    font-size: 13px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.product-modal-name {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 10px 0;
+}
+
+.product-modal-price {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.product-modal-description {
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.product-modal-size {
+    margin-bottom: 25px;
+}
+
+.product-modal-size label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.size-options {
+    display: flex;
+    gap: 10px;
+}
+
+.size-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #e5e5e5;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.size-btn:hover,
+.size-btn.selected {
+    border-color: #111;
+    background: #111;
+    color: #fff;
+}
+
+.add-to-cart-modal {
+    width: 100%;
+    padding: 18px;
+    background: #111;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-bottom: 15px;
+}
+
+.add-to-cart-modal:hover {
+    background: #333;
+}
+
+.wishlist-btn {
+    width: 100%;
+    padding: 15px;
+    background: #fff;
+    color: #111;
+    border: 1px solid #111;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.wishlist-btn:hover {
+    background: #f5f5f5;
+}
+
+.wishlist-btn.active {
+    background: #fdf0f0;
+    border-color: #e53935;
+    color: #e53935;
+}
+
+@media (max-width: 768px) {
+    .product-modal-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .product-modal-image {
+        max-height: 300px;
+    }
+    
+    .product-modal-details {
+        padding: 25px;
+    }
+}

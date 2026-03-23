@@ -21,7 +21,7 @@
         </div>
         <div class="header-right">
             <div class="search-bar">
-                <input type="text" placeholder="Search">
+                <input type="text" placeholder="Search" id="search-input">
                 <button class="search-btn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="11" cy="11" r="8"></circle>
@@ -110,6 +110,39 @@
     </div>
 
     <div class="toast" id="toast">Added to bag!</div>
+
+    <div class="product-modal" id="product-modal">
+        <div class="product-modal-content">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div class="product-modal-grid">
+                <div class="product-modal-image">
+                    <img id="modal-image" src="" alt="">
+                </div>
+                <div class="product-modal-details">
+                    <span class="product-modal-category" id="modal-category"></span>
+                    <h2 class="product-modal-name" id="modal-name"></h2>
+                    <p class="product-modal-price" id="modal-price"></p>
+                    <p class="product-modal-description" id="modal-description"></p>
+                    <div class="product-modal-size">
+                        <label>Select Size</label>
+                        <div class="size-options">
+                            <button class="size-btn">S</button>
+                            <button class="size-btn">M</button>
+                            <button class="size-btn">L</button>
+                            <button class="size-btn">XL</button>
+                        </div>
+                    </div>
+                    <button class="add-to-cart-modal" id="modal-add-to-cart">ADD TO BAG</button>
+                    <button class="wishlist-btn" id="modal-wishlist">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        Add to Wishlist
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="products.js"></script>
     <script src="main.js"></script>

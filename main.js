@@ -1,8 +1,12 @@
 let cart = [];
+let wishlist = [];
 let currentCategory = 'all';
 let maxPrice = 500;
+let selectedSize = null;
+let currentModalProduct = null;
 
 function init() {
+    loadWishlist();
     renderProducts();
     setupEventListeners();
     checkAuth();
@@ -13,6 +17,17 @@ function checkAuth() {
     if (!currentUser) {
         window.location.href = 'auth.html';
     }
+}
+
+function loadWishlist() {
+    const saved = localStorage.getItem('wishlist');
+    if (saved) {
+        wishlist = JSON.parse(saved);
+    }
+}
+
+function saveWishlist() {
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
 }
 
 function renderProducts() {
@@ -62,6 +77,12 @@ function renderProducts() {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             addToCart(parseInt(btn.dataset.id));
+        });
+    });
+
+    document.querySelectorAll('.product-card').forEach(card => {
+        card.addEventListener('click', () => {
+            openProductModal(parseInt(card.dataset.id));
         });
     });
 }
@@ -125,6 +146,76 @@ function showToast() {
     }, 2000);
 }
 
+function openProductModal(productId) {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    
+    currentModalProduct = product;
+    selectedSize = null;
+    
+    document.getElementById('modal-image').src = product.image;
+    document.getElementById('modal-category').textContent = product.category;
+    document.getElementById('modal-name').textContent = product.name;
+    document.getElementById('modal-price').textContent = `$${product.price.toFixed(2)}`;
+    document.getElementById('modal-description').textContent = product.description;
+    
+    const wishlistBtn = document.getElementById('modal-wishlist');
+    if (wishlist.includes(productId)) {
+        wishlistBtn.classList.add('active');
+        wishlistBtn.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            Added to Wishlist
+        `;
+    } else {
+        wishlistBtn.classList.remove('active');
+        wishlistBtn.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+            Add to Wishlist
+        `;
+    }
+    
+    document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('selected'));
+    
+    document.getElementById('product-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeProductModal() {
+    document.getElementById('product-modal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function toggleWishlist() {
+    if (!currentModalProduct) return;
+    
+    const productId = currentModalProduct.id;
+    const index = wishlist.indexOf(productId);
+    
+    if (index > -1) {
+        wishlist.splice(index, 1);
+    } else {
+        wishlist.push(productId);
+    }
+    
+    saveWishlist();
+    openProductModal(productId);
+    showToastMessage(wishlist.includes(productId) ? 'Added to Wishlist!' : 'Removed from Wishlist');
+}
+
+function showToastMessage(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.textContent = 'Added to bag!';
+    }, 2000);
+}
+
 function setupEventListeners() {
     document.querySelectorAll('.category-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -166,6 +257,81 @@ function setupEventListeners() {
         btn.addEventListener('click', (e) => {
             e.preventDefault();
             logout();
+        });
+    });
+
+    document.getElementById('close-modal').addEventListener('click', closeProductModal);
+    
+    document.getElementById('product-modal').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('product-modal')) {
+            closeProductModal();
+        }
+    });
+    
+    document.querySelectorAll('.size-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            selectedSize = btn.textContent;
+        });
+    });
+    
+    document.getElementById('modal-add-to-cart').addEventListener('click', () => {
+        if (currentModalProduct) {
+            addToCart(currentModalProduct.id);
+            closeProductModal();
+        }
+    });
+    
+    document.getElementById('modal-wishlist').addEventListener('click', toggleWishlist);
+    
+    document.getElementById('search-input').addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const grid = document.getElementById('products-grid');
+        
+        const filteredProducts = products.filter(product => {
+            const categoryMatch = currentCategory === 'all' || product.category === currentCategory;
+            const priceMatch = product.price <= maxPrice;
+            const searchMatch = product.name.toLowerCase().includes(searchTerm) || 
+                              product.category.toLowerCase().includes(searchTerm);
+            return categoryMatch && priceMatch && searchMatch;
+        });
+        
+        const categoryNames = {
+            'all': 'All Products',
+            'shoes': 'Shoes',
+            'clothing': 'Clothing',
+            'accessories': 'Accessories',
+            'equipment': 'Equipment'
+        };
+        document.querySelector('.products-title').textContent = searchTerm ? `Search: "${searchTerm}"` : categoryNames[currentCategory];
+        
+        grid.innerHTML = filteredProducts.map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-image">
+                    <img src="${product.image}" alt="${product.name}">
+                    ${product.new ? '<span class="product-badge">NEW</span>' : ''}
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${product.name}</h3>
+                    <p class="product-category">${product.category}</p>
+                    <p class="product-price">$${product.price.toFixed(2)}</p>
+                    <button class="add-to-cart" data-id="${product.id}">ADD TO BAG</button>
+                </div>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('.add-to-cart').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                addToCart(parseInt(btn.dataset.id));
+            });
+        });
+        
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', () => {
+                openProductModal(parseInt(card.dataset.id));
+            });
         });
     });
 }
