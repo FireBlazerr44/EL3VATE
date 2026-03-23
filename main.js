@@ -4,14 +4,21 @@ let currentCategory = 'all';
 let maxPrice = 500;
 let selectedSize = null;
 let currentModalProduct = null;
+let allProducts = [];
 
 function init() {
     loadCart();
     loadWishlist();
+    loadAllProducts();
     renderProducts();
     setupEventListeners();
     checkAuth();
     updateCartUI();
+}
+
+function loadAllProducts() {
+    const adminProducts = JSON.parse(localStorage.getItem('adminProducts') || '[]');
+    allProducts = [...products, ...adminProducts];
 }
 
 function loadCart() {
@@ -40,10 +47,11 @@ function saveWishlist() {
 }
 
 function renderProducts() {
+    loadAllProducts();
     const grid = document.getElementById('products-grid');
     const title = document.querySelector('.products-title');
     
-    let filteredProducts = products.filter(product => {
+    let filteredProducts = allProducts.filter(product => {
         const categoryMatch = currentCategory === 'all' || product.category === currentCategory;
         const priceMatch = product.price <= maxPrice;
         return categoryMatch && priceMatch;
@@ -97,7 +105,7 @@ function renderProducts() {
 }
 
 function addToCart(productId) {
-    const product = products.find(p => p.id === productId);
+    const product = allProducts.find(p => p.id === productId);
     const existingItem = cart.find(item => item.id === productId);
     
     if (existingItem) {
@@ -195,7 +203,7 @@ function showToast() {
 }
 
 function openProductModal(productId) {
-    const product = products.find(p => p.id === productId);
+    const product = allProducts.find(p => p.id === productId);
     if (!product) return;
     
     currentModalProduct = product;
@@ -354,7 +362,7 @@ function setupEventListeners() {
         const searchTerm = e.target.value.toLowerCase();
         const grid = document.getElementById('products-grid');
         
-        const filteredProducts = products.filter(product => {
+        const filteredProducts = allProducts.filter(product => {
             const categoryMatch = currentCategory === 'all' || product.category === currentCategory;
             const priceMatch = product.price <= maxPrice;
             const searchMatch = product.name.toLowerCase().includes(searchTerm) || 
