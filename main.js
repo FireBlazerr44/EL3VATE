@@ -5,6 +5,7 @@ let maxPrice = 500;
 let selectedSize = null;
 let currentModalProduct = null;
 let allProducts = [];
+let deletedProductIds = [];
 
 function init() {
     loadCart();
@@ -18,7 +19,9 @@ function init() {
 
 function loadAllProducts() {
     const adminProducts = JSON.parse(localStorage.getItem('adminProducts') || '[]');
-    allProducts = [...products, ...adminProducts];
+    deletedProductIds = JSON.parse(localStorage.getItem('deletedProductIds') || '[]');
+    
+    allProducts = [...products, ...adminProducts].filter(p => !deletedProductIds.includes(p.id));
 }
 
 function loadCart() {
@@ -105,6 +108,7 @@ function renderProducts() {
 }
 
 function addToCart(productId) {
+    loadAllProducts();
     const product = allProducts.find(p => p.id === productId);
     const existingItem = cart.find(item => item.id === productId);
     

@@ -1,4 +1,5 @@
 let adminProducts = [];
+let deletedProductIds = [];
 let editingProductId = null;
 let deleteProductId = null;
 
@@ -21,10 +22,17 @@ function checkAdminAuth() {
 function loadAdminProducts() {
     const stored = localStorage.getItem('adminProducts');
     adminProducts = stored ? JSON.parse(stored) : [];
+    
+    const deleted = localStorage.getItem('deletedProductIds');
+    deletedProductIds = deleted ? JSON.parse(deleted) : [];
 }
 
 function saveAdminProducts() {
     localStorage.setItem('adminProducts', JSON.stringify(adminProducts));
+}
+
+function saveDeletedProductIds() {
+    localStorage.setItem('deletedProductIds', JSON.stringify(deletedProductIds));
 }
 
 function getAllProducts() {
@@ -32,9 +40,9 @@ function getAllProducts() {
 }
 
 function getNextProductId() {
-    const allProducts = getAllProducts();
-    if (allProducts.length === 0) return 1;
-    return Math.max(...allProducts.map(p => p.id)) + 1;
+    const allProds = getAllProducts();
+    if (allProds.length === 0) return 1;
+    return Math.max(...allProds.map(p => p.id)) + 1;
 }
 
 function renderProducts(filter = '', category = 'all') {
@@ -65,7 +73,7 @@ function renderProducts(filter = '', category = 'all') {
     }
 
     tbody.innerHTML = allProducts.map(product => {
-        const isAdminProduct = product.id > 16;
+        const isModified = adminProducts.some(p => p.id === product.id);
         return `
             <tr data-id="${product.id}">
                 <td>
@@ -76,7 +84,7 @@ function renderProducts(filter = '', category = 'all') {
                 <td>
                     <div class="admin-product-name">
                         ${product.name}
-                        ${isAdminProduct ? '<span class="admin-badge">Admin</span>' : ''}
+                        ${isModified ? '<span class="admin-badge">Modified</span>' : ''}
                     </div>
                 </td>
                 <td>
@@ -88,20 +96,18 @@ function renderProducts(filter = '', category = 'all') {
                 </td>
                 <td>
                     <div class="admin-action-buttons">
-                        ${isAdminProduct ? `
-                            <button class="admin-action-btn edit-btn" data-id="${product.id}" title="Edit">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                                </svg>
-                            </button>
-                            <button class="admin-action-btn delete-btn" data-id="${product.id}" title="Delete">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                </svg>
-                            </button>
-                        ` : '<span class="admin-default-text">Built-in</span>'}
+                        <button class="admin-action-btn edit-btn" data-id="${product.id}" title="Edit">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                            </svg>
+                        </button>
+                        <button class="admin-action-btn delete-btn" data-id="${product.id}" title="Delete">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
                     </div>
                 </td>
             </tr>
@@ -118,7 +124,7 @@ function renderProducts(filter = '', category = 'all') {
 }
 
 function updateStats() {
-    const allProducts = getAllProducts();
+    const allProducts = getAllProducts().filter(p => !deletedProductIds.includes(p.id));
     document.getElementById('total-products').textContent = allProducts.length;
     document.getElementById('admin-products-count').textContent = adminProducts.length;
     document.getElementById('shoes-count').textContent = allProducts.filter(p => p.category === 'shoes').length;
@@ -183,34 +189,53 @@ function addProduct(productData) {
 }
 
 function updateProduct(id, productData) {
-    const index = adminProducts.findIndex(p => p.id === id);
-    if (index === -1) {
-        return { success: false, message: 'Product not found' };
+    const existingIndex = adminProducts.findIndex(p => p.id === id);
+    
+    const originalProduct = products.find(p => p.id === id);
+    if (originalProduct) {
+        const updatedProduct = {
+            id: id,
+            ...productData,
+            isModified: true
+        };
+        
+        if (existingIndex !== -1) {
+            adminProducts[existingIndex] = updatedProduct;
+        } else {
+            adminProducts.push(updatedProduct);
+        }
+    } else {
+        if (existingIndex !== -1) {
+            adminProducts[existingIndex] = { ...adminProducts[existingIndex], ...productData };
+        } else {
+            return { success: false, message: 'Product not found' };
+        }
     }
-
-    const duplicate = adminProducts.find(p => p.id !== id && p.name.toLowerCase() === productData.name.toLowerCase());
-    if (duplicate) {
-        return { success: false, message: 'A product with this name already exists' };
-    }
-
-    adminProducts[index] = { ...adminProducts[index], ...productData };
+    
     saveAdminProducts();
     return { success: true, message: 'Product updated successfully!' };
 }
 
 function deleteProduct(id) {
-    const index = adminProducts.findIndex(p => p.id === id);
-    if (index === -1) {
-        return { success: false, message: 'Product not found' };
+    deletedProductIds.push(id);
+    saveDeletedProductIds();
+    
+    const adminIndex = adminProducts.findIndex(p => p.id === id);
+    if (adminIndex !== -1) {
+        adminProducts.splice(adminIndex, 1);
+        saveAdminProducts();
     }
-
-    adminProducts.splice(index, 1);
-    saveAdminProducts();
+    
     return { success: true, message: 'Product deleted successfully!' };
 }
 
 function editProduct(id) {
-    const product = adminProducts.find(p => p.id === id);
+    let product = adminProducts.find(p => p.id === id);
+    
+    if (!product) {
+        product = products.find(p => p.id === id);
+    }
+    
     if (!product) return;
 
     editingProductId = id;
