@@ -21,12 +21,7 @@ function loadAllProducts() {
     const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
     const deletedIds = deletedProducts.map(p => p.id);
     
-    allProducts = products.filter(p => !deletedIds.includes(p.id));
-    adminProducts.forEach(p => {
-        if (!deletedIds.includes(p.id)) {
-            allProducts.push(p);
-        }
-    });
+    allProducts = adminProducts.filter(p => !deletedIds.includes(p.id));
 }
 
 function loadCart() {

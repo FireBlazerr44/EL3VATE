@@ -6,10 +6,21 @@ let deleteProductId = null;
 function init() {
     checkAdminAuth();
     loadData();
+    migrateBuiltInProducts();
     renderProducts();
     renderTrashProducts();
     updateStats();
     setupEventListeners();
+}
+
+function migrateBuiltInProducts() {
+    const stored = localStorage.getItem('adminProducts');
+    const existingAdminProducts = stored ? JSON.parse(stored) : [];
+    
+    if (existingAdminProducts.length === 0 && products.length > 0) {
+        adminProducts = products.map(p => ({ ...p }));
+        saveAdminProducts();
+    }
 }
 
 function checkAdminAuth() {
@@ -45,8 +56,9 @@ function getAllProducts() {
 }
 
 function getVisibleProducts() {
-    const modifiedIds = getModifiedProductIds();
-    return [...products, ...adminProducts].filter(p => !modifiedIds.includes(p.id) || adminProducts.some(ap => ap.id === p.id));
+    const modifiedIds = adminProducts.map(p => p.id);
+    const visible = products.filter(p => !modifiedIds.includes(p.id));
+    return [...visible, ...adminProducts];
 }
 
 function getNextProductId() {
